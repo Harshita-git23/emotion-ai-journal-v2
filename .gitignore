@@ -1,0 +1,29 @@
+backend# Environment variables
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Virtual environments
+.venv/
+venv/
+
+# ML model artifacts
+ml/models/*.pkl
+ml/models/*.joblib
+
+# Generated data
+data/
+*.db
+*.sqlite3
+
+# Frontend
+node_modules/
+frontend/dist/
+
+# OS files
+.DS_Store
