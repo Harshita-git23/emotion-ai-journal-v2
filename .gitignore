@@ -1,29 +1,112 @@
-backend# Environment variables
+# ==============================
+# Environment variables & secrets
+# ==============================
 .env
 .env.*
 !.env.example
+!.env.sample
 
+# ==============================
 # Python
+# ==============================
 __pycache__/
 *.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.eggs/
 .pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
 
 # Virtual environments
 .venv/
 venv/
+env/
 
-# ML model artifacts
-ml/models/*.pkl
-ml/models/*.joblib
+# ==============================
+# FastAPI / Backend
+# ==============================
+*.log
+logs/
+instance/
 
-# Generated data
-data/
+# Local databases
 *.db
+*.sqlite
 *.sqlite3
+*.db-journal
 
-# Frontend
+# ==============================
+# React / Node / Vite
+# ==============================
 node_modules/
 frontend/dist/
+dist/
+.vite/
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
 
-# OS files
+# ==============================
+# Machine Learning
+# ==============================
+# Trained model files / checkpoints
+*.pt
+*.pth
+*.onnx
+*.h5
+*.keras
+*.safetensors
+*.joblib
+*.pkl
+
+# Training outputs
+checkpoints/
+runs/
+wandb/
+lightning_logs/
+
+# ==============================
+# Audio / User Uploads
+# ==============================
+*.wav
+*.mp3
+*.m4a
+*.ogg
+*.flac
+uploads/
+temp/
+tmp/
+
+# ==============================
+# Datasets / Generated Data
+# ==============================
+datasets/
+data/
+data/raw/
+data/processed/
+
+# ==============================
+# macOS
+# ==============================
 .DS_Store
+.AppleDouble
+.LSOverride
+
+# ==============================
+# IDEs / Editors
+# ==============================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ==============================
+# Miscellaneous
+# ==============================
+Thumbs.db
+desktop.ini

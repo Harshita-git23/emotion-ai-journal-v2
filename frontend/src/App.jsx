@@ -1,6 +1,6 @@
 
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-
+import VoiceJournal from "./pages/VoiceJournal";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -27,7 +27,7 @@ function AppRoutes() {
           <Route path="/journal" element={<Journal />} />
           <Route path="/history" element={<div>Emotional History — Coming soon</div>} />
           <Route path="/patterns" element={<div>Patterns — Coming soon</div>} />
-          <Route path="/voice" element={<div>Voice Journal — Coming soon</div>} />
+          <Route path="/voice" element={<VoiceJournal />} />
         </Route>
       </Route>
 

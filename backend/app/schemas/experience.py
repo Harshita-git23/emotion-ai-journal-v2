@@ -2,7 +2,7 @@
 from datetime import datetime
 from typing import Literal
 
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 
 EmotionName = Literal[
@@ -18,38 +18,73 @@ EmotionName = Literal[
     "confused",
     "frustrated",
     "hopeful",
-    "embarrassed"
+    "embarrassed",
 ]
 
 
 class ExperienceCreate(BaseModel):
-    title: str = Field(min_length=1, max_length=200)
-    situation: str = Field(min_length=1)
+    title: str | None = Field(default=None, max_length=200)
+    input_mode: Literal["text", "voice"] = "text"
+    content: str | None = None
+    situation: str | None = None
     thoughts: str | None = None
     response: str | None = None
-    helped: str | None = None
-    occurred_at: datetime
-    emotions: list[EmotionName] = Field(default_factory=list, max_length=12)
+
+    occurred_at: datetime | None = None
+
+    emotions: list[EmotionName] = Field(default_factory=list)
+
+    @model_validator(mode="after")
+    def validate_journal_content(self):
+        if self.input_mode == "voice":
+            return self
+
+        if not any(
+            value and value.strip()
+            for value in [self.content, self.situation]
+        ):
+            raise ValueError(
+                "Provide journal content or a situation."
+            )
+
+        return self
+
+
+class ExperienceUpdate(BaseModel):
+    title: str | None = Field(default=None, max_length=200)
+    content: str | None = None
+    situation: str | None = None
+    thoughts: str | None = None
+    response: str | None = None
+    occurred_at: datetime | None = None
 
 
 class EmotionResponse(BaseModel):
+    id: int
     emotion: str
     source: str
     score: float | None
-    is_confirmed: bool
+    feedback_status: str
 
     model_config = ConfigDict(from_attributes=True)
 
 
 class ExperienceResponse(BaseModel):
     id: int
-    title: str
-    situation: str
+    title: str | None
+    content: str | None
+    situation: str | None
     thoughts: str | None
     response: str | None
-    helped: str | None
+
+    input_mode: str
+    content_version: int
     occurred_at: datetime
     created_at: datetime
-    emotions: list[EmotionResponse]
+    updated_at: datetime
+
+    emotion_observations: list[EmotionResponse] = Field(
+        default_factory=list
+    )
 
     model_config = ConfigDict(from_attributes=True)

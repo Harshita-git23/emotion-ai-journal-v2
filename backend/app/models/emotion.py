@@ -1,7 +1,12 @@
 
 from sqlalchemy import (
-    String, Float, Boolean, ForeignKey, CheckConstraint
+    String,
+    Float,
+    ForeignKey,
+    CheckConstraint,
+    DateTime
 )
+from datetime import datetime, timezone
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.session import Base
@@ -14,6 +19,17 @@ class EmotionObservation(Base):
         CheckConstraint(
             "source IN ('user_reported', 'text_model', 'speech_model')",
             name="valid_emotion_source"
+        ),
+        CheckConstraint(
+            """
+            feedback_status IN (
+                'not_applicable',
+                'pending',
+                'confirmed',
+                'rejected'
+            )
+            """,
+            name="valid_feedback_status"
         ),
         CheckConstraint(
             "score IS NULL OR (score >= 0 AND score <= 1)",
@@ -29,6 +45,13 @@ class EmotionObservation(Base):
         index=True
     )
 
+    # Nullable for emotions reported directly by the user.
+    analysis_run_id: Mapped[int | None] = mapped_column(
+        ForeignKey("analysis_runs.id", ondelete="SET NULL"),
+        nullable=True,
+        index=True
+    )
+
     emotion: Mapped[str] = mapped_column(
         String(50),
         nullable=False
@@ -39,20 +62,29 @@ class EmotionObservation(Base):
         nullable=False
     )
 
-    # Model probability, stored between 0 and 1.
-    # User-reported emotions have no probability score.
     score: Mapped[float | None] = mapped_column(
         Float,
         nullable=True
     )
 
-    is_confirmed: Mapped[bool] = mapped_column(
-        Boolean,
-        default=False,
+    feedback_status: Mapped[str] = mapped_column(
+        String(30),
+        default="pending",
+        nullable=False
+    )
+
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
         nullable=False
     )
 
     experience = relationship(
         "Experience",
-        back_populates="emotions"
+        back_populates="emotion_observations"
+    )
+
+    analysis_run = relationship(
+        "AnalysisRun",
+        back_populates="emotion_observations"
     )

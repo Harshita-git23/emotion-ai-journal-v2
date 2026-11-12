@@ -1,28 +1,17 @@
 
-from contextlib import asynccontextmanager
-
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
-from app.db.session import Base, engine
-from app import models
-from app.api.analysis import router as analysis_router
 from app.api.auth import router as auth_router
 from app.api.experiences import router as experiences_router
-
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    Base.metadata.create_all(bind=engine)
-    yield
-
+from app.api.analysis import router as analysis_router
+from app.api.emotion_feedback import router as emotion_feedback_router
 
 app = FastAPI(
     title=settings.APP_NAME,
     description="A personal emotional history and reflection platform",
-    version="1.0.0",
-    lifespan=lifespan
+    version="2.0.0"
 )
 
 
@@ -39,10 +28,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 app.include_router(auth_router)
 app.include_router(experiences_router)
 app.include_router(analysis_router)
-
+app.include_router(emotion_feedback_router)
 
 @app.get("/")
 def root():

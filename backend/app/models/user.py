@@ -25,5 +25,13 @@ class User(Base):
     experiences = relationship(
         "Experience",
         back_populates="user",
-        cascade="all, delete-orphan"
+        cascade="all, delete-orphan",
+        passive_deletes=True
+    )
+
+    tags = relationship(
+        "Tag",
+        back_populates="user",
+        cascade="all, delete-orphan",
+        passive_deletes=True
     )
